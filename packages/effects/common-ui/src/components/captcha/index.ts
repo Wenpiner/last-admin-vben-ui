@@ -1,3 +1,4 @@
+export { default as LastAdminCaptcha } from './last-admin-captcha/index.vue';
 export { default as PointSelectionCaptcha } from './point-selection-captcha/index.vue';
 export { default as PointSelectionCaptchaCard } from './point-selection-captcha/index.vue';
 

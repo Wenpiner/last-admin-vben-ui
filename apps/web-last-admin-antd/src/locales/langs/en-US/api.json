@@ -1,0 +1,15 @@
+{
+  "totp": {
+    "title": "Two-Factor Authentication",
+    "description": "Please enter your two-factor authentication code",
+    "placeholder": "Please enter the code",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "emptyError": "Please enter the verification code",
+    "cancelMessage": "User cancelled two-factor authentication",
+    "failedMessage": "Two-factor authentication failed, please try again"
+  },
+  "authentication": {
+    "registerSuccess": "Register successfully"
+  }
+}

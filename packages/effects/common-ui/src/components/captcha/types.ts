@@ -209,3 +209,79 @@ export interface SliderRotateVerifyPassingData {
   moveDistance: number;
   moveX: number;
 }
+
+/**
+ * 验证码数据更新函数
+ * 用于在 onRefresh 回调中更新验证码的所有动态数据
+ */
+export interface CaptchaDataSetter {
+  /**
+   * 设置验证码数据
+   * @param id 验证码 ID
+   * @param base64Blob 验证码图片或音频的 base64 数据
+   * @param audioBlob 音频数据（可选，用于音频类型）
+   * @param captchaType 验证码类型
+   */
+  (id: string, base64Blob: string, captchaType: string): void;
+}
+
+export interface LastAdminCaptchaProps {
+  /**
+   * @description 输入框占位符
+   * @default ''
+   */
+  placeholder?: string;
+
+  /**
+   * @description 刷新按钮文本
+   * @default '刷新'
+   */
+  refreshText?: string;
+
+  /**
+   * @description 输入框宽度
+   * @default '100%'
+   */
+  width?: number | string;
+
+  /**
+   * @description 输入框高度
+   * @default '40px'
+   */
+  height?: number | string;
+
+  /**
+   * @description 验证码图片宽度
+   * @default '100px'
+   */
+  captchaWidth?: number | string;
+
+  /**
+   * @description 验证码图片高度
+   * @default '40px'
+   */
+  captchaHeight?: number | string;
+
+  /**
+   * @description 刷新验证码的回调函数
+   * @param setter 用于设置验证码数据的函数
+   */
+  onRefresh?: (setter: CaptchaDataSetter) => Promise<void> | void;
+
+  /**
+   * @description 验证码值变化的回调函数
+   */
+  onChange?: (data: LastAdminCaptchaData) => void;
+}
+
+export interface LastAdminCaptchaData {
+  /**
+   * 验证码 ID
+   */
+  id: string;
+
+  /**
+   * 用户输入的验证码值
+   */
+  value: string;
+}

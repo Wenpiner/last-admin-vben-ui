@@ -1,0 +1,40 @@
+{
+  "action": "操作",
+  "createdAt": "创建时间",
+  "menu": {
+    "authCode": "权限码",
+    "component": "组件",
+    "create": "新增菜单",
+    "disabled": "禁用",
+    "enabled": "启用",
+    "hideInMenu": "隐藏",
+    "icon": "图标",
+    "menuTitle": "菜单标题",
+    "name": "菜单",
+    "operation": "操作",
+    "order": "排序",
+    "path": "路由路径",
+    "service": "所属服务",
+    "state": "状态",
+    "title": "菜单管理",
+    "type": "菜单类型",
+    "typeButton": "按钮",
+    "typeCatalog": "目录",
+    "typeEmbedded": "内嵌",
+    "typeLink": "外链",
+    "typeMenu": "菜单"
+  },
+  "no": "否",
+  "operation": {
+    "create": "新增",
+    "delete": "删除",
+    "edit": "修改"
+  },
+  "tableAction": {
+    "more": "更多",
+    "confirm": "确认",
+    "cancel": "取消",
+    "deleteConfirm": "确定要删除吗？"
+  },
+  "yes": "是"
+}

@@ -13,6 +13,10 @@
       "path": "apps/web-ele",
     },
     {
+      "name": "@last-admin/antd",
+      "path": "apps/web-last-admin-antd",
+    },
+    {
       "name": "@vben/web-naive",
       "path": "apps/web-naive",
     },

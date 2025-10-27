@@ -1,0 +1,7 @@
+{
+  "captcha": {
+    "inputPlaceholder": "Please enter captcha",
+    "loading": "Loading...",
+    "refresh": "Refresh"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "totp": {
+    "title": "二步验证",
+    "description": "请输入您的二步验证码",
+    "placeholder": "请输入验证码",
+    "confirm": "确认",
+    "cancel": "取消",
+    "emptyError": "请输入验证码",
+    "cancelMessage": "用户取消了二步验证",
+    "failedMessage": "二步验证失败，请重试"
+  },
+  "authentication": {
+    "registerSuccess": "注册成功"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "captcha": {
+    "inputPlaceholder": "请输入验证码",
+    "loading": "加载中...",
+    "refresh": "刷新"
+  }
+}

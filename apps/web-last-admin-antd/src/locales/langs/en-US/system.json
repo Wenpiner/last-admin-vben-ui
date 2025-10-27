@@ -1,0 +1,41 @@
+{
+  "action": "Action",
+  "createdAt": "Created At",
+  "menu": {
+    "authCode": "Auth Code",
+    "component": "Component",
+    "create": "Create Menu",
+    "disabled": "Disabled",
+    "enabled": "Enabled",
+    "hideInMenu": "Hide",
+    "icon": "Icon",
+    "menuTitle": "Menu Title",
+    "name": "Menu",
+    "operation": "Operation",
+    "order": "Order",
+    "path": "Route Path",
+    "service": "Service",
+    "state": "State",
+    "title": "Menu Management",
+    "type": "Menu Type",
+    "typeButton": "Button",
+    "typeCatalog": "Catalog",
+    "typeEmbedded": "Embedded",
+    "typeLink": "Link",
+    "typeMenu": "Menu"
+  },
+  "no": "No",
+  "operation": {
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "tableAction": {
+    "more": "More",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "deleteConfirm": "Are you sure you want to delete?"
+  },
+  "yes": "Yes"
+}
+
