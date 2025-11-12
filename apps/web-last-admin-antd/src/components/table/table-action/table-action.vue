@@ -5,7 +5,16 @@ import { computed, ref } from 'vue';
 
 import { IconifyIcon } from '@vben/icons';
 
-import { Button, Dropdown, Popconfirm, Space, Tooltip } from 'ant-design-vue';
+import {
+  Button,
+  Dropdown,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  Popconfirm,
+  Space,
+  Tooltip,
+} from 'ant-design-vue';
 
 import { $t } from '#/locales';
 
@@ -97,6 +106,50 @@ const dropdownItems = computed(() => {
 });
 
 /**
+ * 获取按钮属性
+ */
+function getButtonProps(action: ActionItem) {
+  const {
+    label: _,
+    icon: __,
+    popConfirm: ___,
+    ifShow: ____,
+    buttonType: _____,
+    color,
+    ...buttonProps
+  } = action;
+
+  return {
+    ...buttonProps,
+    // 设置默认的 type 和 size
+    type: buttonProps.type || 'link',
+    size: buttonProps.size ?? props.size,
+    // 设置颜色类
+    class: `px-1 ${getColorClass(color)}`,
+  };
+}
+
+/**
+ * 获取按钮颜色类
+ */
+function getColorClass(color?: string): string {
+  switch (color) {
+    case 'error': {
+      return '!text-red-500 hover:!text-red-400 dark:!text-red-400 dark:hover:!text-red-300';
+    }
+    case 'success': {
+      return '!text-green-500 hover:!text-green-400 dark:!text-green-400 dark:hover:!text-green-300';
+    }
+    case 'warning': {
+      return '!text-yellow-500 hover:!text-yellow-400 dark:!text-yellow-400 dark:hover:!text-yellow-300';
+    }
+    default: {
+      return '!text-blue-500 hover:!text-blue-400 dark:!text-blue-400 dark:hover:!text-blue-300';
+    }
+  }
+}
+
+/**
  * 处理按钮点击
  */
 function handleActionClick(action: ActionItem) {
@@ -158,11 +211,7 @@ function handlePopconfirmCancel(action: ActionItem) {
           v-bind="typeof action.tooltip === 'string' ? {} : action.tooltip"
         >
           <Button
-            type="link"
-            :size="size"
-            :disabled="action.disabled"
-            :danger="action.color === 'error'"
-            class="px-1"
+            v-bind="getButtonProps(action)"
             @click="() => handleActionClick(action)"
           >
             <IconifyIcon
@@ -175,11 +224,7 @@ function handlePopconfirmCancel(action: ActionItem) {
         </Tooltip>
         <Button
           v-else
-          type="link"
-          :size="size"
-          :disabled="action.disabled"
-          :danger="action.color === 'error'"
-          class="px-1"
+          v-bind="getButtonProps(action)"
           @click="() => handleActionClick(action)"
         >
           <IconifyIcon
@@ -196,11 +241,7 @@ function handlePopconfirmCancel(action: ActionItem) {
         v-bind="typeof action.tooltip === 'string' ? {} : action.tooltip"
       >
         <Button
-          type="link"
-          :size="size"
-          :disabled="action.disabled"
-          :danger="action.color === 'error'"
-          class="px-1"
+          v-bind="getButtonProps(action)"
           @click="() => handleActionClick(action)"
         >
           <IconifyIcon
@@ -213,11 +254,7 @@ function handlePopconfirmCancel(action: ActionItem) {
       </Tooltip>
       <Button
         v-else
-        type="link"
-        :size="size"
-        :disabled="action.disabled"
-        :danger="action.color === 'error'"
-        class="px-1"
+        v-bind="getButtonProps(action)"
         @click="() => handleActionClick(action)"
       >
         <IconifyIcon
@@ -235,10 +272,10 @@ function handlePopconfirmCancel(action: ActionItem) {
       :disabled="dropdownItems.every((item) => item.disabled)"
     >
       <template #overlay>
-        <a-menu>
+        <Menu>
           <template v-for="(item, index) in dropdownItems" :key="index">
-            <a-menu-divider v-if="item.divider" />
-            <a-menu-item
+            <MenuDivider v-if="item.divider" />
+            <MenuItem
               :disabled="item.disabled"
               @click="() => handleActionClick(item)"
             >
@@ -271,11 +308,11 @@ function handlePopconfirmCancel(action: ActionItem) {
                 />
                 {{ item.label }}
               </div>
-            </a-menu-item>
+            </MenuItem>
           </template>
-        </a-menu>
+        </Menu>
       </template>
-      <Button type="link" size="small" class="px-1">
+      <Button type="link" :size="size" class="px-1">
         {{ $t('system.tableAction.more') }}
       </Button>
     </Dropdown>

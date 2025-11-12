@@ -3,25 +3,62 @@ import type { VxeTableGridOptions } from '@vben/plugins/vxe-table';
 
 import type { SystemMenuApi } from '#/api/system/menu';
 
-import { Page } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
+import { h } from 'vue';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+import { IconifyIcon, Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
 
+import { Button, message } from 'ant-design-vue';
+
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getMenuList } from '#/api/system/menu';
+import { deleteMenu, getMenuList } from '#/api/system/menu';
+import TableAction from '#/components/table/table-action/table-action.vue';
 
 import { useColumns } from './data';
+import Form from './modules/form.vue';
 
-const [Grid] = useVbenVxeGrid<SystemMenuApi.SystemMenu>({
+const [FormModal, formModalApi] = useVbenModal({
+  connectedComponent: Form,
+  destroyOnClose: true,
+});
+
+const [Grid, gridApi] = useVbenVxeGrid<SystemMenuApi.SystemMenu>({
   gridOptions: {
     columns: [
       ...(useColumns() as any),
       {
         field: 'action',
+        fixed: 'right',
         title: $t('system.action'),
-        width: 100,
+        width: 150,
+        align: 'center',
         slots: {
-          default: ({ _row }) => {},
+          default: ({ row }) => {
+            return h(TableAction, {
+              align: 'center',
+              actions: [
+                {
+                  type: 'link',
+                  label: $t('system.operation.edit'),
+                  onClick: () => {
+                    onEdit(row);
+                  },
+                },
+                {
+                  type: 'link',
+                  color: 'error',
+                  label: $t('system.operation.delete'),
+                  popConfirm: {
+                    title: $t('system.tableAction.deleteConfirm'),
+                    confirm: () => {
+                      onDelete(row);
+                    },
+                  },
+                },
+              ],
+            });
+          },
         },
       },
     ],
@@ -62,14 +99,57 @@ const [Grid] = useVbenVxeGrid<SystemMenuApi.SystemMenu>({
     },
   } as VxeTableGridOptions,
 });
+
+function onRefresh() {
+  gridApi.query();
+}
+
+function onEdit(row: SystemMenuApi.SystemMenu) {
+  formModalApi.setData(row).open();
+}
+
+function onCreate() {
+  formModalApi.setData({}).open();
+}
+
+async function onDelete(row: SystemMenuApi.SystemMenu) {
+  if (!row.id) return;
+
+  const hideLoading = message.loading({
+    content: $t('ui.actionMessage.deleting', [row.meta?.title || row.name]),
+    duration: 0,
+    key: 'action_process_msg',
+  });
+
+  try {
+    await deleteMenu(row.id as number);
+    message.success({
+      content: $t('ui.actionMessage.deleteSuccess', [
+        row.meta?.title || row.name,
+      ]),
+      key: 'action_process_msg',
+    });
+    onRefresh();
+  } catch (error) {
+    hideLoading();
+    console.error('Delete menu failed:', error);
+  }
+}
 </script>
 
 <template>
   <Page auto-content-height>
+    <FormModal @success="onRefresh" />
     <Grid>
+      <template #toolbar-tools>
+        <Button type="primary" @click="onCreate">
+          <Plus class="size-5" />
+          {{ $t('ui.actionTitle.create', [$t('system.menu.name')]) }}
+        </Button>
+      </template>
       <template #icon="{ row }">
         <div class="flex-center">
-          <IconifyIcon v-if="row.meta?.icon" :icon="row.meta?.icon" />
+          <IconifyIcon v-if="row.meta?.icon" :icon="row.meta?.icon as string" />
         </div>
       </template>
     </Grid>

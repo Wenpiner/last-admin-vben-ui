@@ -25,9 +25,9 @@ setupVbenVxeTable({
         proxyConfig: {
           autoLoad: true,
           response: {
-            result: 'items',
+            result: 'list',
             total: 'total',
-            list: 'items',
+            list: 'data',
           },
           showActiveMsg: true,
           showResponseMsg: false,
@@ -55,6 +55,14 @@ setupVbenVxeTable({
           { size: 'small', type: 'link' },
           { default: () => props?.text },
         );
+      },
+    });
+
+    // 渲染 createdAt 字段
+    vxeUI.renderer.add('CellCreatedAt', {
+      renderTableDefault(_renderOpts, params) {
+        const { column, row } = params;
+        return h('span', {}, () => row[column.field]);
       },
     });
 

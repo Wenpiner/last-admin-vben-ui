@@ -7,7 +7,7 @@ export default defineConfig(async () => {
       server: {
         proxy: {
           '/api/sys-api': {
-            target: 'http://localhost:8888',
+            target: 'http://localhost:8889',
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/api\/sys-api/, ''),
             ws: true,
