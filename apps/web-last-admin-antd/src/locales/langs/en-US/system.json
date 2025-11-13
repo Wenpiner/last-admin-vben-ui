@@ -107,7 +107,26 @@
     "loadApisFailed": "Failed to load API list",
     "loadRoleApisFailed": "Failed to load role API permissions",
     "permissionOperation": "Permission Operation",
-    "requiredApi": "Required"
+    "requiredApi": "Required",
+    "configurationGroupManagement": "Configuration Management",
+    "assignConfigurationGroup": "Assign Configuration",
+    "assignConfigurationGroupTitle": "Assign Configuration Permissions to Role {roleName}",
+    "configurationPermissionTip": "Please select the configuration permissions to assign to this role and set the corresponding read/write permissions",
+    "loadingConfigurations": "Loading configuration data...",
+    "noConfigurationData": "No configuration data available",
+    "assignConfigurationGroupSuccess": "Configuration permission assignment successful",
+    "assignConfigurationGroupFailed": "Configuration permission assignment failed",
+    "loadConfigurationsFailed": "Failed to load configuration list",
+    "loadRoleConfigurationGroupsFailed": "Failed to load role configuration permissions",
+    "selectConfigurations": "Select Configurations",
+    "permissionSettings": "Permission Settings",
+    "noSelectedConfigurations": "Please select configurations first",
+    "readPermission": "Read Only",
+    "writePermission": "Read/Write",
+    "noPermission": "No Permission",
+    "inherited": "Inherited",
+    "setByParent": "Set by Parent",
+    "pathPermissionTip": "Select path permissions. Parent permissions will automatically apply to all children. Individual child selection only affects that child."
   },
   "tableAction": {
     "more": "More",
@@ -252,6 +271,17 @@
     "cleanWarningTitle": "Clean Warning",
     "cleanWarningContent": "This operation will permanently delete tokens that match the criteria. Please proceed with caution. It is recommended to perform this operation during system maintenance.",
     "selectUser": "Select User"
+  },
+  "configuration": {
+    "name": "Configuration",
+    "title": "Configuration Management",
+    "key": "Configuration Key",
+    "value": "Configuration Value",
+    "group": "Configuration Group",
+    "description": "Configuration Description",
+    "keyFormatError": "Configuration key can only contain letters, numbers, underscores, dots and hyphens",
+    "keyPlaceholder": "Only letters, numbers, underscores, dots and hyphens allowed",
+    "valuePlaceholder": "Please enter configuration value, supports text, JSON and other formats"
   },
   "yes": "Yes"
 }

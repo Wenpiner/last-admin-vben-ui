@@ -115,4 +115,39 @@ export async function assignApiToRole(data: {
   return requestClient.post<any>('/sys-api/role/assign/api', data);
 }
 
+/**
+ * 获取角色配置项分组权限
+ * @param roleValue 角色编码
+ */
+export async function getRoleConfigurationGroup(roleValue: string) {
+  return requestClient.post<string[]>('/sys-api/role/get/configurationGroup', {
+    id: roleValue,
+  });
+}
+
+/**
+ * 为角色分配配置项分组权限
+ * @param data 角色配置项分组分配信息
+ * @param data.roleValue 角色编码
+ * @param data.configurationGroups 配置项分组数组
+ */
+export async function assignConfigurationGroupToRole(data: {
+  configurationGroups: string[];
+  roleValue: string;
+}) {
+  return requestClient.post<any>(
+    '/sys-api/role/assign/configurationGroup',
+    data,
+  );
+}
+
+/**
+ * 获取所有配置分组列表
+ */
+export async function getConfigurationGroupList() {
+  return requestClient.get<string[]>(
+    '/sys-api/role/get/configurationGroupList',
+  );
+}
+
 export {};

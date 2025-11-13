@@ -17,6 +17,7 @@ import { deleteRole, getRoleList } from '#/api/system/role';
 
 import { useColumns, useSearchFormSchemas } from './data';
 import ApiAssign from './modules/api-assign.vue';
+import ConfigAssign from './modules/config-assign.vue';
 import Form from './modules/form.vue';
 import MenuAssign from './modules/menu-assign.vue';
 
@@ -32,6 +33,11 @@ const [MenuAssignModal, menuAssignModalApi] = useVbenModal({
 
 const [ApiAssignModal, apiAssignModalApi] = useVbenModal({
   connectedComponent: ApiAssign,
+  destroyOnClose: true,
+});
+
+const [ConfigAssignModal, configAssignModalApi] = useVbenModal({
+  connectedComponent: ConfigAssign,
   destroyOnClose: true,
 });
 
@@ -102,6 +108,14 @@ const gridOptions: VxeTableGridOptions<SystemRoleApi.RoleInfo> = {
                       },
                       () => $t('system.role.apiManagement'),
                     ),
+                    h(
+                      MenuItem,
+                      {
+                        key: 'config',
+                        onClick: () => onConfigAssign(row),
+                      },
+                      () => $t('system.role.configurationGroupManagement'),
+                    ),
                   ]),
               },
             ),
@@ -171,6 +185,10 @@ function onApiAssign(row: SystemRoleApi.RoleInfo) {
   apiAssignModalApi.setData(row).open();
 }
 
+function onConfigAssign(row: SystemRoleApi.RoleInfo) {
+  configAssignModalApi.setData(row).open();
+}
+
 async function onDelete(row: SystemRoleApi.RoleInfo) {
   if (!row.id) return;
 
@@ -199,6 +217,7 @@ async function onDelete(row: SystemRoleApi.RoleInfo) {
     <FormModal @success="onRefresh" />
     <MenuAssignModal @success="onRefresh" />
     <ApiAssignModal @success="onRefresh" />
+    <ConfigAssignModal @success="onRefresh" />
     <Grid>
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">
