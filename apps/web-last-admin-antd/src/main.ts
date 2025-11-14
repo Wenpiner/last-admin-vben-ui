@@ -1,7 +1,14 @@
-import { initPreferences } from '@vben/preferences';
+import { initPreferences, type Preferences } from '@vben/preferences';
 import { unmountGlobalLoading } from '@vben/utils';
 
 import { overridesPreferences } from './preferences';
+
+
+interface ApiVbenPreference {
+  code: number;
+  message: string;
+  data: Preferences;
+}
 
 /**
  * 应用初始化完成之后再进行页面加载渲染
@@ -13,10 +20,15 @@ async function initApplication() {
   const appVersion = import.meta.env.VITE_APP_VERSION;
   const namespace = `${import.meta.env.VITE_APP_NAMESPACE}-${appVersion}-${env}`;
 
+  // 加载VBEN偏好设置
+  const vbenPreference = await fetch(
+    `/api/sys-api/public/config/vben_preference`,
+  ).then((res) => res.json()) as ApiVbenPreference;
+
   // app偏好设置初始化
   await initPreferences({
     namespace,
-    overrides: overridesPreferences,
+    overrides: vbenPreference.data,
   });
 
   // 启动应用并挂载
