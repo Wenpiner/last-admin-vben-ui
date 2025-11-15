@@ -100,16 +100,28 @@ const [Grid, gridApi] = useVbenVxeGrid<SystemMenuApi.SystemMenu>({
   } as VxeTableGridOptions,
 });
 
-function onRefresh() {
-  gridApi.query();
+async function onRefresh() {
+  await gridApi.query();
 }
 
 function onEdit(row: SystemMenuApi.SystemMenu) {
-  formModalApi.setData(row).open();
+  const treeData = gridApi.grid.getFullData() || [];
+  formModalApi
+    .setData({
+      ...row,
+      menuTreeData: treeData,
+    })
+    .open();
 }
 
 function onCreate() {
-  formModalApi.setData({}).open();
+  const treeData = gridApi.grid.getFullData() || [];
+  console.warn('treeData', treeData);
+  formModalApi
+    .setData({
+      menuTreeData: treeData,
+    })
+    .open();
 }
 
 async function onDelete(row: SystemMenuApi.SystemMenu) {

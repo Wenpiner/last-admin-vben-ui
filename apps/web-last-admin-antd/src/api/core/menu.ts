@@ -16,7 +16,7 @@ export interface MenuRecordRaw extends RouteRecordStringComponent {
  */
 export function convertMenusToTree<
   T extends {
-    children?: T[];
+    children?: T[] | undefined;
     id: number | string;
     parentId?: null | number | string;
   },

@@ -17,6 +17,18 @@ const emit = defineEmits<{
 }>();
 
 const formData = ref<SystemMenuApi.SystemMenu>();
+const treeData = ref<any[]>([]);
+
+/**
+ * 将菜单数据转换为树形结构，并添加 label 字段
+ */
+function transformMenuTreeData(menus: any[]): any[] {
+  return menus.map((menu) => ({
+    ...menu,
+    label: menu.meta?.title || menu.name,
+    children: menu.children ? transformMenuTreeData(menu.children) : undefined,
+  }));
+}
 
 const schema: VbenFormSchema[] = [
   // 菜单类型
@@ -37,11 +49,13 @@ const schema: VbenFormSchema[] = [
   {
     component: 'Input',
     fieldName: 'name',
-    label: $t('system.menu.name'),
+    label: $t('system.menu.menuName'),
+    help: $t('system.menu.menuNameHelp'),
     rules: z
       .string()
       .min(1, $t('ui.formRules.required', [$t('system.menu.name')]))
-      .max(50, $t('ui.formRules.maxLength', [$t('system.menu.name'), 50])),
+      .max(50, $t('ui.formRules.maxLength', [$t('system.menu.name'), 50]))
+      .regex(/^[a-zA-Z0-9]+$/),
   },
   // 服务名称 (ServiceName) - 任何情况都需要
   {
@@ -53,10 +67,28 @@ const schema: VbenFormSchema[] = [
       .min(1, $t('ui.formRules.required', [$t('system.menu.service')]))
       .max(50, $t('ui.formRules.maxLength', [$t('system.menu.service'), 50])),
   },
+  // 父级菜单
+  {
+    component: 'TreeSelect',
+    componentProps: {
+      allowClear: true,
+      class: 'w-full',
+      fieldNames: {
+        children: 'children',
+        label: 'label',
+        value: 'id',
+      },
+      placeholder: $t('system.menu.parentMenu'),
+      treeData,
+      treeDefaultExpandAll: true,
+    },
+    fieldName: 'parentId',
+    label: $t('system.menu.parentMenu'),
+  },
   // 菜单标题
   {
     component: 'Input',
-    fieldName: 'meta.title',
+    fieldName: 'title',
     label: $t('system.menu.menuTitle'),
     rules: z
       .string()
@@ -65,33 +97,6 @@ const schema: VbenFormSchema[] = [
         100,
         $t('ui.formRules.maxLength', [$t('system.menu.menuTitle'), 100]),
       ),
-  },
-  // 菜单路径 - menu 和 directory 类型需要
-  {
-    component: 'Input',
-    dependencies: {
-      show: (values) => {
-        return ['directory', 'menu'].includes(values.type);
-      },
-      rules: (values) => {
-        return ['directory', 'menu'].includes(values.type)
-          ? z
-              .string()
-              .min(1, $t('ui.formRules.required', [$t('system.menu.path')]))
-              .max(
-                200,
-                $t('ui.formRules.maxLength', [$t('system.menu.path'), 200]),
-              )
-              .refine(
-                (value: string) => value.startsWith('/'),
-                $t('ui.formRules.startWith', [$t('system.menu.path'), '/']),
-              )
-          : null;
-      },
-      triggerFields: ['type'],
-    },
-    fieldName: 'path',
-    label: $t('system.menu.path'),
   },
   // 菜单模式选择 - menu 类型显示
   {
@@ -115,6 +120,41 @@ const schema: VbenFormSchema[] = [
     fieldName: 'menuMode',
     label: $t('system.menu.menuMode'),
     rules: 'required',
+  },
+  // 菜单路径 - menu 和 directory 类型需要，但当菜单模式为外链时不显示
+  {
+    component: 'Input',
+    dependencies: {
+      show: (values) => {
+        // 当菜单模式为外链时，不显示路由路径字段
+        const isLinkMode = values.type === 'menu' && values.menuMode === 'link';
+        return ['directory', 'menu'].includes(values.type) && !isLinkMode;
+      },
+      rules: (values) => {
+        // 当菜单模式为外链时，路由路径不需要
+        const isLinkMode = values.type === 'menu' && values.menuMode === 'link';
+
+        if (!['directory', 'menu'].includes(values.type) || isLinkMode) {
+          return null;
+        }
+
+        // 其他模式下，路由路径必填
+        return z
+          .string()
+          .min(1, $t('ui.formRules.required', [$t('system.menu.path')]))
+          .max(
+            200,
+            $t('ui.formRules.maxLength', [$t('system.menu.path'), 200]),
+          )
+          .refine(
+            (value: string) => value.startsWith('/'),
+            $t('ui.formRules.startWith', [$t('system.menu.path'), '/']),
+          );
+      },
+      triggerFields: ['type', 'menuMode'],
+    },
+    fieldName: 'path',
+    label: $t('system.menu.path'),
   },
   // 组件路径 - 组件模式显示
   {
@@ -173,7 +213,7 @@ const schema: VbenFormSchema[] = [
       },
       triggerFields: ['type', 'menuMode'],
     },
-    fieldName: 'meta.iframeSrc',
+    fieldName: 'iframeSrc',
     label: $t('system.menu.iframeAddress'),
     help: $t('system.menu.iframeAddressHelp', ['https://example.com']),
   },
@@ -197,7 +237,7 @@ const schema: VbenFormSchema[] = [
       },
       triggerFields: ['type', 'menuMode'],
     },
-    fieldName: 'meta.link',
+    fieldName: 'link',
     label: $t('system.menu.linkAddress'),
     help: $t('system.menu.linkAddressHelp', ['https://example.com']),
   },
@@ -250,7 +290,7 @@ const schema: VbenFormSchema[] = [
       },
       triggerFields: ['type'],
     },
-    fieldName: 'meta.icon',
+    fieldName: 'icon',
     label: $t('system.menu.icon'),
     help: $t('system.menu.iconHelp', ['mdi:home']),
     rules: z
@@ -268,7 +308,7 @@ const schema: VbenFormSchema[] = [
       placeholder: $t('system.menu.order'),
     },
     defaultValue: 0,
-    fieldName: 'meta.order',
+    fieldName: 'order',
     label: $t('system.menu.order'),
     rules: z
       .number()
@@ -298,19 +338,21 @@ const schema: VbenFormSchema[] = [
       },
       triggerFields: ['type'],
     },
-    fieldName: 'meta.hideInMenu',
+    fieldName: 'hideInMenu',
     label: $t('system.menu.hideInMenu'),
   },
-  // 是否缓存
+  // 是否缓存 - menu 类型且不是外链模式时显示
   {
     component: 'Switch',
     dependencies: {
       show: (values) => {
-        return values.type === 'menu';
+        // 菜单类型且不是外链模式时显示
+        const isLinkMode = values.type === 'menu' && values.menuMode === 'link';
+        return values.type === 'menu' && !isLinkMode;
       },
-      triggerFields: ['type'],
+      triggerFields: ['type', 'menuMode'],
     },
-    fieldName: 'meta.keepAlive',
+    fieldName: 'keepAlive',
     label: $t('system.menu.keepAlive'),
   },
   // 描述
@@ -345,8 +387,12 @@ const [Modal, modalApi] = useVbenModal({
   onConfirm: onSubmit,
   async onOpenChange(isOpen) {
     if (isOpen) {
-      const data = modalApi.getData<SystemMenuApi.SystemMenu>();
-      if (data) {
+      const data = modalApi.getData<SystemMenuApi.SystemMenu & { menuTreeData?: SystemMenuApi.SystemMenu[] }>();
+      // 从 setData 中获取菜单树数据，并转换为包含 label 字段的格式
+      if (data?.menuTreeData) {
+        treeData.value = transformMenuTreeData(data.menuTreeData);
+      }
+      if (data && Object.keys(data).length > 0 && data.id) {
         formData.value = data;
         // 设置表单值
         // 根据现有数据推断菜单模式
@@ -361,13 +407,13 @@ const [Modal, modalApi] = useVbenModal({
           {
             ...data,
             menuMode,
-            'meta.title': data.meta?.title || '',
-            'meta.icon': data.meta?.icon || '',
-            'meta.order': data.meta?.order || 0,
-            'meta.hideInMenu': data.meta?.hideInMenu || false,
-            'meta.keepAlive': data.meta?.keepAlive || false,
-            'meta.iframeSrc': data.meta?.iframeSrc || '',
-            'meta.link': data.meta?.link || '',
+            title: data.meta?.title || '',
+            icon: data.meta?.icon || '',
+            order: data.meta?.order || 0,
+            hideInMenu: data.meta?.hideInMenu || false,
+            keepAlive: data.meta?.keepAlive || false,
+            iframeSrc: data.meta?.iframeSrc || '',
+            link: data.meta?.link || '',
           },
           false,
         );
@@ -378,11 +424,11 @@ const [Modal, modalApi] = useVbenModal({
           type: 'menu',
           state: true,
           menuMode: 'component',
-          'meta.order': 0,
-          'meta.hideInMenu': false,
-          'meta.keepAlive': false,
-          'meta.iframeSrc': '',
-          'meta.link': '',
+          order: 0,
+          hideInMenu: false,
+          keepAlive: false,
+          iframeSrc: '',
+          link: '',
         });
       }
     }
@@ -395,27 +441,73 @@ async function onSubmit() {
     modalApi.lock();
     const formValues = await formApi.getValues();
 
-    // 构建提交数据
+    // 根据菜单类型和菜单模式清空不相关的字段
     let component = '';
+    let path = '';
+    let permission = '';
+    let iframeSrc: string | undefined;
+    let link: string | undefined;
+    let title = '';
+    let icon = '';
+    let hideInMenu = false;
+    let keepAlive = false;
 
-    // 根据菜单模式设置组件
-    switch (formValues.menuMode) {
-      case 'component': {
-        component = formValues.component || '';
+    if (formValues.type === 'menu') {
+      // 菜单类型
+      title = formValues['title'] || '';
+      icon = formValues['icon'] || '';
+      hideInMenu = formValues['hideInMenu'] || false;
+      keepAlive = formValues['keepAlive'] || false;
 
-        break;
+      switch (formValues.menuMode) {
+        case 'component': {
+          // 组件模式：保留 component 和 path，清空 iframe 和 link
+          component = formValues.component || '';
+          path = formValues.path || '';
+          iframeSrc = undefined;
+          link = undefined;
+          break;
+        }
+        case 'iframe': {
+          // IFrame 模式：设置 component 为 IFrameView，保留 iframeSrc，清空 link 和 path
+          component = 'IFrameView';
+          iframeSrc = formValues['iframeSrc'] || undefined;
+          path = formValues.path || '';
+          link = undefined;
+          break;
+        }
+        case 'link': {
+          // 外链模式：设置 component 为外链组件，保留 link，清空 path、iframe 和 keepAlive
+          component = '#/layouts/external-link';
+          link = formValues['link'] || undefined;
+          path = '';
+          iframeSrc = undefined;
+          keepAlive = false;
+          break;
+        }
+        // No default
       }
-      case 'iframe': {
-        component = '#/layouts/iframe-view';
-
-        break;
-      }
-      case 'link': {
-        component = '#/layouts/external-link';
-
-        break;
-      }
-      // No default
+    } else if (formValues.type === 'button') {
+      // 按钮类型：只保留 permission，清空其他所有字段
+      permission = formValues.permission || '';
+      component = '';
+      path = '';
+      iframeSrc = undefined;
+      link = undefined;
+      title = '';
+      icon = '';
+      hideInMenu = false;
+      keepAlive = false;
+    } else if (formValues.type === 'directory') {
+      // 目录类型：保留 path 和 icon，清空 iframe、link 等
+      path = formValues.path || '';
+      title = formValues['title'] || '';
+      icon = formValues['icon'] || '';
+      hideInMenu = formValues['hideInMenu'] || false;
+      component = '';
+      iframeSrc = undefined;
+      link = undefined;
+      keepAlive = false;
     }
 
     const data: SystemMenuApi.MenuCreateOrUpdateRequest = {
@@ -424,22 +516,20 @@ async function onSubmit() {
       service: formValues.service,
       type: formValues.type,
       state: formValues.state,
-      path: formValues.path || '',
+      path,
       component,
-      permission: formValues.permission || '',
+      permission,
       description: formValues.description || '',
-      parentId: formData.value?.parentId
-        ? Number(formData.value.parentId)
-        : null,
+      parentId: formValues.parentId ? Number(formValues.parentId) : null,
       meta: {
-        title: formValues['meta.title'],
-        icon: formValues['meta.icon'],
-        order: formValues['meta.order'] || 0,
-        hideInMenu: formValues['meta.hideInMenu'] || false,
-        keepAlive: formValues['meta.keepAlive'] || false,
+        title,
+        icon,
+        order: formValues['order'] || 0,
+        hideInMenu,
+        keepAlive,
         // 添加 iframe 和 link 支持
-        iframeSrc: formValues['meta.iframeSrc'] || undefined,
-        link: formValues['meta.link'] || undefined,
+        iframeSrc,
+        link,
         // 设置其他默认值
         affixTab: false,
         affixTabOrder: 0,

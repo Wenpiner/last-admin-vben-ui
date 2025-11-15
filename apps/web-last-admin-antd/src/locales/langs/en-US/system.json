@@ -53,6 +53,8 @@
     "menuModeComponent": "Component",
     "menuModeIframe": "IFrame",
     "menuModeLink": "Link",
+    "menuName": "Menu Name",
+    "menuNameHelp": "Menu name can only contain letters and numbers",
     "menuTitle": "Menu Title",
     "name": "Menu",
     "operation": "Operation",
@@ -66,7 +68,9 @@
     "typeCatalog": "Catalog",
     "typeEmbedded": "Embedded",
     "typeLink": "Link",
-    "typeMenu": "Menu"
+    "typeMenu": "Menu",
+    "parentMenu": "Parent Menu",
+    "parentMenuHelp": "Leave blank for top-level menu"
   },
   "description": "Description",
   "no": "No",
@@ -285,4 +289,3 @@
   },
   "yes": "Yes"
 }
-

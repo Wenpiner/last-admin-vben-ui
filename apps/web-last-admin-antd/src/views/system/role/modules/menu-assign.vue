@@ -39,7 +39,7 @@ async function loadAllMenus() {
 async function loadRoleMenus(roleValue: string) {
   try {
     const result = await getRoleMenu(roleValue);
-    const menuIds = (result?.data || []).map((menu: any) => menu.id);
+    const menuIds = (result || []).map((menu: any) => Number(menu.id));
     checkedKeys.value = menuIds;
   } catch (error) {
     console.error('Failed to load role menus:', error);
@@ -80,10 +80,10 @@ const [Modal, modalApi] = useVbenModal({
       const data = modalApi.getData<SystemRoleApi.RoleInfo>();
       if (data) {
         roleData.value = data;
-        await loadAllMenus();
         if (data.id) {
           await loadRoleMenus(data.roleCode);
         }
+        await loadAllMenus();
       }
     } else {
       // 重置数据
@@ -110,7 +110,7 @@ const treeData = computed(() => {
   // 转换为 Ant Design Tree 组件需要的格式
   const convertToTreeData = (menus: any[]): any[] => {
     return menus.map((menu) => ({
-      key: menu.id,
+      key: Number(menu.id),
       title: menu.meta?.title || menu.name,
       children: menu.children ? convertToTreeData(menu.children) : [],
     }));

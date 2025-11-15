@@ -55,6 +55,8 @@
     "menuModeIframe": "IFrame",
     "menuModeLink": "外链",
     "menuTitle": "菜单标题",
+    "menuName": "菜单名称",
+    "menuNameHelp": "菜单名称只能字母和数字组合",
     "name": "菜单",
     "operation": "操作",
     "order": "排序",
@@ -67,7 +69,9 @@
     "typeCatalog": "目录",
     "typeEmbedded": "内嵌",
     "typeLink": "外链",
-    "typeMenu": "菜单"
+    "typeMenu": "菜单",
+    "parentMenu": "父级菜单",
+    "parentMenuHelp": "不填写默认使用顶级菜单"
   },
   "description": "描述",
   "no": "否",
