@@ -20,7 +20,7 @@ type: "always_apply"
 **文件路径**: `src/api/system/{module-name}.ts`
 
 ```typescript
-import type { PageRequest } from './base';
+import type { BaseListInfo, PageRequest } from './base';
 
 import { requestClient } from '#/api/request';
 
@@ -53,10 +53,7 @@ export namespace System{MODULE_NAME}Api {
   /**
    * {模块中文名}列表信息
    */
-  export interface {MODULE_NAME}ListInfo {
-    total: number;
-    list: {MODULE_NAME}Info[];
-  }
+  export type {MODULE_NAME}ListInfo = BaseListInfo<{MODULE_NAME}Info>;
 }
 
 /**

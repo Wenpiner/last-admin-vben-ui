@@ -1,4 +1,4 @@
-import type { PageRequest } from './base';
+import type { BaseListInfo, PageRequest } from './base';
 
 import { requestClient } from '#/api/request';
 
@@ -28,10 +28,7 @@ export namespace SystemConfigurationApi {
   /**
    * 配置列表信息
    */
-  export interface ConfigurationListInfo {
-    total: number;
-    list: ConfigurationInfo[];
-  }
+  export type ConfigurationListInfo = BaseListInfo<ConfigurationInfo>;
 }
 
 /**

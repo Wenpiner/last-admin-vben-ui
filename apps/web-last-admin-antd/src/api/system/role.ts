@@ -1,4 +1,4 @@
-import type { PageRequest } from './base';
+import type { BaseListInfo, PageRequest } from './base';
 
 import { requestClient } from '#/api/request';
 
@@ -28,10 +28,7 @@ export namespace SystemRoleApi {
   /**
    * 角色列表信息
    */
-  export interface RoleListInfo {
-    total: number;
-    list: RoleInfo[];
-  }
+  export type RoleListInfo = BaseListInfo<RoleInfo>;
 }
 
 /**

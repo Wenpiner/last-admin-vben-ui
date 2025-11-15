@@ -1,4 +1,4 @@
-import type { PageRequest } from './base';
+import type { BaseListInfo, PageRequest } from './base';
 
 import { requestClient } from '#/api/request';
 
@@ -32,10 +32,7 @@ export namespace SystemApiApi {
   /**
    * API 列表信息
    */
-  export interface ApiListInfo {
-    total: number;
-    list: ApiInfo[];
-  }
+  export type ApiListInfo = BaseListInfo<ApiInfo>;
 
   /**
    * API 列表响应

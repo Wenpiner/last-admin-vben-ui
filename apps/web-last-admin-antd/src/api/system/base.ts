@@ -6,3 +6,8 @@ export interface PageRequest extends Recordable<any> {
     pageSize: number;
   };
 }
+
+export interface BaseListInfo<T> {
+  total: number;
+  list: T[];
+}

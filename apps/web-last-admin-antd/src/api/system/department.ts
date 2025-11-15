@@ -1,4 +1,4 @@
-import type { PageRequest } from './base';
+import type { BaseListInfo, PageRequest } from './base';
 
 import { requestClient } from '#/api/request';
 
@@ -36,10 +36,7 @@ export namespace SystemDepartmentApi {
   /**
    * 部门列表信息
    */
-  export interface DepartmentListInfo {
-    total: number;
-    list: DepartmentInfo[];
-  }
+  export type DepartmentListInfo = BaseListInfo<DepartmentInfo>;
 }
 
 /**

@@ -1,4 +1,4 @@
-import type { PageRequest } from './base';
+import type { BaseListInfo, PageRequest } from './base';
 
 import { requestClient } from '#/api/request';
 
@@ -29,10 +29,7 @@ export namespace SystemPositionApi {
   /**
    * 岗位列表信息
    */
-  export interface PositionListInfo {
-    total: number;
-    list: PositionInfo[];
-  }
+  export type PositionListInfo = BaseListInfo<PositionInfo>;
 }
 
 /**

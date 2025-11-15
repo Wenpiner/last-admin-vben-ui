@@ -1,4 +1,4 @@
-import type { PageRequest } from './base';
+import type { BaseListInfo, PageRequest } from './base';
 
 import { requestClient } from '#/api/request';
 
@@ -47,10 +47,7 @@ export namespace SystemOauthApi {
   /**
    * OAuth提供商列表信息（用于内部处理）
    */
-  export interface OauthListInfo {
-    total: number;
-    list: OauthInfo[];
-  }
+  export type OauthListInfo = BaseListInfo<OauthInfo>;
 }
 
 /**

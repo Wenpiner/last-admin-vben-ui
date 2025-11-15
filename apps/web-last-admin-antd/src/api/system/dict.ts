@@ -1,4 +1,4 @@
-import type { PageRequest } from './base';
+import type { BaseListInfo, PageRequest } from './base';
 
 import { requestClient } from '#/api/request';
 
@@ -54,18 +54,12 @@ export namespace SystemDictApi {
   /**
    * 字典列表信息
    */
-  export interface DictListInfo {
-    total: number;
-    list: DictInfo[];
-  }
+  export type DictListInfo = BaseListInfo<DictInfo>;
 
   /**
    * 字典子项列表信息
    */
-  export interface DictItemListInfo {
-    total: number;
-    list: DictItemInfo[];
-  }
+  export type DictItemListInfo = BaseListInfo<DictItemInfo>;
 }
 
 /**

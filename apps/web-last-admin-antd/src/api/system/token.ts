@@ -1,4 +1,4 @@
-import type { PageRequest } from './base';
+import type { BaseListInfo, PageRequest } from './base';
 
 import { requestClient } from '#/api/request';
 
@@ -42,10 +42,7 @@ export namespace SystemTokenApi {
   /**
    * Token列表信息
    */
-  export interface TokenListInfo {
-    total: number;
-    list: TokenInfo[];
-  }
+  export type TokenListInfo = BaseListInfo<TokenInfo>;
 
   /**
    * 拉黑Token请求参数

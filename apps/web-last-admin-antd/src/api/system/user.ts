@@ -1,4 +1,4 @@
-import type { PageRequest } from './base';
+import type { BaseListInfo, PageRequest } from './base';
 
 import { requestClient } from '#/api/request';
 
@@ -60,10 +60,7 @@ export namespace SystemUserApi {
   /**
    * 用户列表信息
    */
-  export interface UserListInfo {
-    total: number;
-    list: UserInfo[];
-  }
+  export type UserListInfo = BaseListInfo<UserInfo>;
 }
 
 /**
