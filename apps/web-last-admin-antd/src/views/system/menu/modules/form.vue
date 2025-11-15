@@ -55,7 +55,7 @@ const schema: VbenFormSchema[] = [
       .string()
       .min(1, $t('ui.formRules.required', [$t('system.menu.name')]))
       .max(50, $t('ui.formRules.maxLength', [$t('system.menu.name'), 50]))
-      .regex(/^[a-zA-Z0-9]+$/),
+      .regex(/^[a-z0-9]+$/i),
   },
   // 服务名称 (ServiceName) - 任何情况都需要
   {
@@ -142,10 +142,7 @@ const schema: VbenFormSchema[] = [
         return z
           .string()
           .min(1, $t('ui.formRules.required', [$t('system.menu.path')]))
-          .max(
-            200,
-            $t('ui.formRules.maxLength', [$t('system.menu.path'), 200]),
-          )
+          .max(200, $t('ui.formRules.maxLength', [$t('system.menu.path'), 200]))
           .refine(
             (value: string) => value.startsWith('/'),
             $t('ui.formRules.startWith', [$t('system.menu.path'), '/']),
@@ -387,7 +384,9 @@ const [Modal, modalApi] = useVbenModal({
   onConfirm: onSubmit,
   async onOpenChange(isOpen) {
     if (isOpen) {
-      const data = modalApi.getData<SystemMenuApi.SystemMenu & { menuTreeData?: SystemMenuApi.SystemMenu[] }>();
+      const data = modalApi.getData<
+        SystemMenuApi.SystemMenu & { menuTreeData?: SystemMenuApi.SystemMenu[] }
+      >();
       // 从 setData 中获取菜单树数据，并转换为包含 label 字段的格式
       if (data?.menuTreeData) {
         treeData.value = transformMenuTreeData(data.menuTreeData);
@@ -452,62 +451,73 @@ async function onSubmit() {
     let hideInMenu = false;
     let keepAlive = false;
 
-    if (formValues.type === 'menu') {
-      // 菜单类型
-      title = formValues['title'] || '';
-      icon = formValues['icon'] || '';
-      hideInMenu = formValues['hideInMenu'] || false;
-      keepAlive = formValues['keepAlive'] || false;
+    switch (formValues.type) {
+      case 'button': {
+        // 按钮类型：只保留 permission，清空其他所有字段
+        permission = formValues.permission || '';
+        component = '';
+        path = '';
+        iframeSrc = undefined;
+        link = undefined;
+        title = '';
+        icon = '';
+        hideInMenu = false;
+        keepAlive = false;
 
-      switch (formValues.menuMode) {
-        case 'component': {
-          // 组件模式：保留 component 和 path，清空 iframe 和 link
-          component = formValues.component || '';
-          path = formValues.path || '';
-          iframeSrc = undefined;
-          link = undefined;
-          break;
-        }
-        case 'iframe': {
-          // IFrame 模式：设置 component 为 IFrameView，保留 iframeSrc，清空 link 和 path
-          component = 'IFrameView';
-          iframeSrc = formValues['iframeSrc'] || undefined;
-          path = formValues.path || '';
-          link = undefined;
-          break;
-        }
-        case 'link': {
-          // 外链模式：设置 component 为外链组件，保留 link，清空 path、iframe 和 keepAlive
-          component = '#/layouts/external-link';
-          link = formValues['link'] || undefined;
-          path = '';
-          iframeSrc = undefined;
-          keepAlive = false;
-          break;
-        }
-        // No default
+        break;
       }
-    } else if (formValues.type === 'button') {
-      // 按钮类型：只保留 permission，清空其他所有字段
-      permission = formValues.permission || '';
-      component = '';
-      path = '';
-      iframeSrc = undefined;
-      link = undefined;
-      title = '';
-      icon = '';
-      hideInMenu = false;
-      keepAlive = false;
-    } else if (formValues.type === 'directory') {
-      // 目录类型：保留 path 和 icon，清空 iframe、link 等
-      path = formValues.path || '';
-      title = formValues['title'] || '';
-      icon = formValues['icon'] || '';
-      hideInMenu = formValues['hideInMenu'] || false;
-      component = '';
-      iframeSrc = undefined;
-      link = undefined;
-      keepAlive = false;
+      case 'directory': {
+        // 目录类型：保留 path 和 icon，清空 iframe、link 等
+        path = formValues.path || '';
+        title = formValues.title || '';
+        icon = formValues.icon || '';
+        hideInMenu = formValues.hideInMenu || false;
+        component = '';
+        iframeSrc = undefined;
+        link = undefined;
+        keepAlive = false;
+
+        break;
+      }
+      case 'menu': {
+        // 菜单类型
+        title = formValues.title || '';
+        icon = formValues.icon || '';
+        hideInMenu = formValues.hideInMenu || false;
+        keepAlive = formValues.keepAlive || false;
+
+        switch (formValues.menuMode) {
+          case 'component': {
+            // 组件模式：保留 component 和 path，清空 iframe 和 link
+            component = formValues.component || '';
+            path = formValues.path || '';
+            iframeSrc = undefined;
+            link = undefined;
+            break;
+          }
+          case 'iframe': {
+            // IFrame 模式：设置 component 为 IFrameView，保留 iframeSrc，清空 link 和 path
+            component = 'IFrameView';
+            iframeSrc = formValues.iframeSrc || undefined;
+            path = formValues.path || '';
+            link = undefined;
+            break;
+          }
+          case 'link': {
+            // 外链模式：设置 component 为外链组件，保留 link，清空 path、iframe 和 keepAlive
+            component = '#/layouts/external-link';
+            link = formValues.link || undefined;
+            path = '';
+            iframeSrc = undefined;
+            keepAlive = false;
+            break;
+          }
+          // No default
+        }
+
+        break;
+      }
+      // No default
     }
 
     const data: SystemMenuApi.MenuCreateOrUpdateRequest = {
@@ -524,7 +534,7 @@ async function onSubmit() {
       meta: {
         title,
         icon,
-        order: formValues['order'] || 0,
+        order: formValues.order || 0,
         hideInMenu,
         keepAlive,
         // 添加 iframe 和 link 支持
