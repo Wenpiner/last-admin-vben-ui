@@ -99,7 +99,7 @@ export function useDictItemColumns(): VxeTableGridOptions<SystemDictApi.DictItem
       title: $t('system.dict.item.value'),
       minWidth: 150,
       editRender: {
-        name: 'input',
+        name: 'textarea',
         attrs: { placeholder: $t('system.dict.item.value') },
       },
     },
