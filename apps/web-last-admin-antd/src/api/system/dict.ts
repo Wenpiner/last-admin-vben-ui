@@ -47,6 +47,7 @@ export namespace SystemDictApi {
    */
   export interface DictItemListRequest extends PageRequest {
     dictId?: number;
+    dictCode?: string;
     label?: string;
     value?: string;
   }
@@ -125,4 +126,22 @@ export async function deleteDictItem(id: number) {
   return requestClient.post<any>('/sys-api/dict/item/delete', { id });
 }
 
-export {};
+
+/**
+ * 获取字典列表，通过ID或Code
+ */
+export async function getDictListByIdOrCode(idOrCode: number | string) {
+  const request = {
+    dictId: 0,
+    dictCode: '',
+  } as SystemDictApi.DictItemListRequest;
+  if (typeof idOrCode === 'number') {
+    request.dictId = idOrCode;
+  } else {
+    request.dictCode = idOrCode;
+  }
+  const result = await getDictItemList(request);
+  return result.list;
+}
+
+export { };
