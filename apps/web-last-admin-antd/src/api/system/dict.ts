@@ -129,14 +129,17 @@ export async function deleteDictItem(id: number) {
 /**
  * 获取字典列表，通过ID或Code
  */
-export async function getDictListByIdOrCode(idOrCode: number | string, pageSize = 1000): Promise<SystemDictApi.DictItemInfo[]> {
+export async function getDictListByIdOrCode(
+  idOrCode: number | string,
+  pageSize = 1000,
+): Promise<SystemDictApi.DictItemInfo[]> {
   const request = {
     dictId: 0,
     dictCode: '',
     page: {
       currentPage: 1,
       pageSize,
-    }
+    },
   } as SystemDictApi.DictItemListRequest;
   if (typeof idOrCode === 'number') {
     request.dictId = idOrCode;
@@ -147,4 +150,4 @@ export async function getDictListByIdOrCode(idOrCode: number | string, pageSize 
   return result.list;
 }
 
-export { };
+export {};
