@@ -126,7 +126,6 @@ export async function deleteDictItem(id: number) {
   return requestClient.post<any>('/sys-api/dict/item/delete', { id });
 }
 
-
 /**
  * 获取字典列表，通过ID或Code
  */
@@ -144,4 +143,4 @@ export async function getDictListByIdOrCode(idOrCode: number | string) {
   return result.list;
 }
 
-export { };
+export {};
