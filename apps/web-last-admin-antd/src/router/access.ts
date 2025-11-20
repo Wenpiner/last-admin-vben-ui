@@ -30,6 +30,12 @@ async function generateAccess(options: GenerateMenuAndRoutesOptions) {
         duration: 1.5,
       });
       const menus = await getAllMenusApi();
+      // 后端采用越大越靠前，需要对 meta.order 取反
+      menus.forEach((menu) => {
+        if (menu.meta?.order) {
+          menu.meta.order = -menu.meta.order;
+        }
+      });
       return convertMenusToTree(menus);
     },
     // 可以指定没有权限跳转403页面
