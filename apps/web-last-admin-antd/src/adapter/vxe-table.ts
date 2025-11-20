@@ -35,6 +35,8 @@ setupVbenVxeTable({
         round: true,
         showOverflow: true,
         size: 'small',
+        stripe: true,
+        rowClassName: 'hover:bg-primary/10',
       } as VxeTableGridOptions,
     });
 

@@ -134,8 +134,8 @@ export async function getDictListByIdOrCode(
   pageSize = 1000,
 ): Promise<SystemDictApi.DictItemInfo[]> {
   const request = {
-    dictId: 0,
-    dictCode: '',
+    dictId: undefined as number | undefined,
+    dictCode: undefined as string | undefined,
     page: {
       currentPage: 1,
       pageSize,

@@ -677,6 +677,7 @@ async function onDelete(row: System{ModuleName}Api.{ModuleName}Info) {
 - 大数据量列表考虑分页加载
 - 树形结构数据使用合适的 pageSize
 - 搜索功能应支持防抖处理
+- `data.ts` 应该只专注定义，对于逻辑处理应当在 `index.vue` 中使用 <template> 模版
 
 ### 4. 可访问性
 - 所有表单字段都应有适当的 label
@@ -709,7 +710,3 @@ touch src/api/system/{module-name}.ts
 ```
 
 然后按照本规范的模板填充各个文件的内容，确保代码结构和功能的一致性。
-
----
-
-**注意**: 在实际开发中，请根据具体的业务需求对规范进行适当调整，但应保持整体架构和代码风格的一致性。

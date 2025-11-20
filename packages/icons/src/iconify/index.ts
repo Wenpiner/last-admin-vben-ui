@@ -13,3 +13,8 @@ export const MdiGoogle = createIconifyIcon('mdi:google');
 export const MdiQqchat = createIconifyIcon('mdi:qqchat');
 
 export const RiDingding = createIconifyIcon('ri:dingding-fill');
+
+// Wand2
+export const Wand2 = createIconifyIcon('lucide:wand-2');
+// Edit
+export const Edit = createIconifyIcon('lucide:edit');

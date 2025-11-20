@@ -7,9 +7,15 @@ export default defineConfig(async () => {
       server: {
         proxy: {
           '/api/sys-api': {
-            target: 'http://localhost:8889',
+            target: 'http://localhost:18889',
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/api\/sys-api/, ''),
+            ws: true,
+          },
+          '/api/iras-api': {
+            target: 'http://localhost:8891',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api\/iras-api/, ''),
             ws: true,
           },
           '/api': {
