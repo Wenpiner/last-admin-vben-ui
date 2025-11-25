@@ -18,16 +18,20 @@ async function initApplication() {
   const env = import.meta.env.PROD ? 'prod' : 'dev';
   const appVersion = import.meta.env.VITE_APP_VERSION;
   const namespace = `${import.meta.env.VITE_APP_NAMESPACE}-${appVersion}-${env}`;
-
-  // 加载VBEN偏好设置
-  const vbenPreference = (await fetch(
-    `/api/sys-api/public/config/vben_preference`,
-  ).then((res) => res.json())) as ApiVbenPreference;
+  let vbenPreference: ApiVbenPreference;
+  // 异常捕获
+  try {
+    vbenPreference = (await fetch(
+      `/api/sys-api/public/config/vben_preference`,
+    ).then((res) => res.json())) as ApiVbenPreference;
+  } catch (error) {
+    vbenPreference = {} as ApiVbenPreference;
+  }
 
   // app偏好设置初始化
   await initPreferences({
     namespace,
-    overrides: vbenPreference.data,
+    overrides: (vbenPreference?.data || {}),
   });
 
   // 启动应用并挂载
