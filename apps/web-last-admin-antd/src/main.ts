@@ -24,14 +24,14 @@ async function initApplication() {
     vbenPreference = (await fetch(
       `/api/sys-api/public/config/vben_preference`,
     ).then((res) => res.json())) as ApiVbenPreference;
-  } catch (error) {
+  } catch {
     vbenPreference = {} as ApiVbenPreference;
   }
 
   // app偏好设置初始化
   await initPreferences({
     namespace,
-    overrides: (vbenPreference?.data || {}),
+    overrides: vbenPreference?.data || {},
   });
 
   // 启动应用并挂载
