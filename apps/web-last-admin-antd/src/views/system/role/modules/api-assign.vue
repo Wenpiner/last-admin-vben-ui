@@ -272,7 +272,7 @@ const getTitle = computed(() =>
           {{ $t('system.role.apiPermissionTip') }}
         </div>
 
-        <div class="h-full max-h-[60vh] overflow-hidden">
+        <div class="max-h-[60vh] overflow-auto">
           <Tree
             v-model:checked-keys="checkedKeys"
             :tree-data="treeData"

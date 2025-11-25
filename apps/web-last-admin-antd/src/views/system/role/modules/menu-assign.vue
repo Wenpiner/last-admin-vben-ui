@@ -138,13 +138,15 @@ const treeData = computed(() => {
         <div class="mb-4 text-sm text-gray-600">
           {{ $t('system.role.menuPermissionTip') }}
         </div>
-        <Tree
-          v-model:checked-keys="checkedKeys"
-          :tree-data="treeData"
-          checkable
-          default-expand-all
-          @check="onCheck"
-        />
+        <div class="max-h-[60vh] overflow-auto">
+          <Tree
+            v-model:checked-keys="checkedKeys"
+            :tree-data="treeData"
+            checkable
+            default-expand-all
+            @check="onCheck"
+          />
+        </div>
       </div>
     </div>
   </Modal>
