@@ -129,7 +129,7 @@ $namespace: vben;
 
       .#{$namespace}-normal-menu__name,
       .#{$namespace}-normal-menu__icon {
-        @apply font-semibold text-primary-foreground;
+        @apply text-primary-foreground font-semibold;
       }
     }
 

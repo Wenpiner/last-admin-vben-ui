@@ -53,7 +53,7 @@ useTabsDrag(props, emit);
     <span
       v-show="showScrollButton"
       :class="{
-        'cursor-pointer text-muted-foreground hover:bg-muted': !scrollIsAtLeft,
+        'text-muted-foreground hover:bg-muted cursor-pointer': !scrollIsAtLeft,
         'pointer-events-none opacity-30': scrollIsAtLeft,
       }"
       class="border-r px-2"
@@ -94,10 +94,10 @@ useTabsDrag(props, emit);
     <span
       v-show="showScrollButton"
       :class="{
-        'cursor-pointer text-muted-foreground hover:bg-muted': !scrollIsAtRight,
+        'text-muted-foreground hover:bg-muted cursor-pointer': !scrollIsAtRight,
         'pointer-events-none opacity-30': scrollIsAtRight,
       }"
-      class="cursor-pointer border-l px-2 text-muted-foreground hover:bg-muted"
+      class="text-muted-foreground hover:bg-muted cursor-pointer border-l px-2"
       @click="scrollDirection('right')"
     >
       <ChevronRight class="size-4 h-full" />
