@@ -7,10 +7,10 @@ import { computed, ref } from 'vue';
 import { useVbenModal } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
-import { message, Tree } from 'ant-design-vue';
+import { Button, message, Tree } from 'ant-design-vue';
 
 import { getAllApis } from '#/api/system/api';
-import { assignApiToRole, getRoleApi } from '#/api/system/role';
+import { assignApiToRole, getRoleApi, resetSuperApi } from '#/api/system/role';
 
 const emit = defineEmits<{
   success: [];
@@ -21,6 +21,26 @@ const allApis = ref<SystemApiApi.ApiInfo[]>([]);
 const checkedKeys = ref<string[]>([]);
 const disabledKeys = ref<string[]>([]); // 存储不可选择的必选API
 const roleData = ref<SystemRoleApi.RoleInfo>();
+const resetting = ref(false);
+
+async function handleResetSuper() {
+  if (!roleData.value?.id) return;
+  try {
+    resetting.value = true;
+    await resetSuperApi(roleData.value.id);
+    message.success('超级管理员 API 权限已成功重置！');
+    
+    // 重新加载 API 权限
+    await loadAllApis();
+    if (roleData.value.roleCode) {
+      await loadRoleApis(roleData.value.roleCode);
+    }
+  } catch (error: any) {
+    console.error('Failed to reset super API:', error);
+  } finally {
+    resetting.value = false;
+  }
+}
 
 // 加载所有API
 async function loadAllApis() {
@@ -268,11 +288,23 @@ const getTitle = computed(() =>
       </div>
 
       <div v-else>
-        <div class="mb-4 text-sm text-gray-600">
-          {{ $t('system.role.apiPermissionTip') }}
+        <div class="mb-4 flex items-center justify-between">
+          <span class="text-sm text-gray-600">
+            {{ $t('system.role.apiPermissionTip') }}
+          </span>
+          <Button
+            v-if="roleData?.roleCode === 'super'"
+            type="primary"
+            danger
+            size="small"
+            :loading="resetting"
+            @click="handleResetSuper"
+          >
+            重置 API 权限
+          </Button>
         </div>
 
-        <div class="h-full max-h-[60vh] overflow-hidden">
+        <div class="max-h-[60vh] overflow-y-auto">
           <Tree
             v-model:checked-keys="checkedKeys"
             :tree-data="treeData"

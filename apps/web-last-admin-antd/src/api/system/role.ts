@@ -147,4 +147,14 @@ export async function getConfigurationGroupList() {
   );
 }
 
+/**
+ * 重置超级管理员 API 权限
+ * @param id 角色 ID
+ */
+export async function resetSuperApi(id: number) {
+  return requestClient.post<any>('/sys-api/role/resetSuperApi', {
+    id,
+  });
+}
+
 export {};
